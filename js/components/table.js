@@ -1,53 +1,77 @@
 const brTables = document.querySelectorAll(".br-table");
+const brTablesHeadersClass = "headers";
 const active = "is-active";
-let brTablesCount = 1;
+let brTablesCount = 0;
 
-function cloneHeader(parent, element, name) {
-  let clone = element.cloneNode(true);
-  let headers = document.createElement("div");
-  let scroller = document.createElement("div");
-
-  scroller.classList.add("scroller");
-  scroller.classList.add("syncscroll");
-  scroller.setAttribute("name", name);
-  headers.appendChild(scroller);
-  for (let i = 0; i < element.children.length; i++) {
-    let item = document.createElement("div");
-    let header = clone.children[i].innerHTML;
-
-    item.style.flex = `1 0 ${element.children[i].offsetWidth}px`;
-    item.classList.add("item");
-    item.innerHTML = header;
-    scroller.appendChild(item);
+function toogleSearch(container, trigger, close) {
+  if (trigger) {
+    trigger.addEventListener("click", function() {
+      container.classList.add(active);
+    });
   }
 
-  headers.classList.add("headers");
-  parent.appendChild(headers);
+  if (close) {
+    close.addEventListener("click", function() {
+      container.classList.remove(active);
+    });
+  }
+}
+
+function setSyncScroll(element) {
+  element.classList.add("syncscroll");
+  element.setAttribute("name", "table-" + brTablesCount);
+}
+
+function setHeaderWidth(parent, element) {
+  let cloneNode = parent.querySelector(`.${brTablesHeadersClass}`);
+  for (let i = 0; i < element.children.length; i++) {
+    elementWidth = element.children[i].offsetWidth;
+    cloneElementWidth = cloneNode.children[0].children[i];
+    cloneElementWidth.style.flex = `1 0 ${elementWidth}px`;
+  }
+}
+
+function cloneHeader(parent, element) {
+  let clone = element.cloneNode(true);
+  let headersTag = document.createElement("div");
+  let scrollerTag = document.createElement("div");
+
+  setSyncScroll(scrollerTag);
+  scrollerTag.classList.add("scroller");
+
+  for (let i = 0; i < element.children.length; i++) {
+    let elementNode = clone.children[i].innerHTML;
+    let cloneElementNode = document.createElement("div");
+
+    cloneElementNode.classList.add("item");
+    cloneElementNode.innerHTML = elementNode;
+
+    scrollerTag.appendChild(cloneElementNode);
+  }
+
+  headersTag.classList.add(brTablesHeadersClass);
+  headersTag.appendChild(scrollerTag);
+
+  parent.appendChild(headersTag);
 }
 
 for (let brTable of brTables) {
   let searchBar = brTable.querySelector(".search-bar");
   let searchTrigger = brTable.querySelector("#search-trigger");
   let searchClose = brTable.querySelector("#search-close");
-  let headers = brTable.querySelector("table thead tr");
-  let headersName = `table-${brTablesCount++}`;
   let responsive = brTable.querySelector(".responsive");
+  let headers = brTable.querySelector("table thead tr");
 
-  responsive.setAttribute("name", headersName);
+  brTablesCount++;
 
-  cloneHeader(brTable, headers, headersName);
+  setSyncScroll(responsive);
+  cloneHeader(brTable, headers);
+  setHeaderWidth(brTable, headers);
+  toogleSearch(searchBar, searchTrigger, searchClose);
 
-  if (searchTrigger) {
-    searchTrigger.addEventListener("click", function() {
-      searchBar.classList.add(active);
-    });
-  }
-
-  if (searchClose) {
-    searchClose.addEventListener("click", function() {
-      searchBar.classList.remove(active);
-    });
-  }
+  window.addEventListener("resize", function() {
+    setHeaderWidth(brTable, headers);
+  });
 }
 
 // function checkBox() {
