@@ -12312,7 +12312,16 @@ fieldset legend,
 /*!
  * table - 0.3 */
 .br-table {
-  width: 100%; }
+  display: grid; }
+  .br-table .header {
+    order: 0; }
+  .br-table .headers {
+    display: none;
+    order: 1; }
+  .br-table .responsive {
+    order: 2; }
+  .br-table .footer {
+    order: 3; }
   .br-table .top-bar {
     align-items: center;
     background-color: #ededed;
@@ -12407,10 +12416,12 @@ fieldset legend,
         padding: 8px 0; }
   .br-table.is-datatable .header {
     position: sticky;
-    top: 0; }
+    top: 0;
+    z-index: 1; }
   .br-table.is-datatable .footer {
     bottom: 0;
-    position: sticky; }
+    position: sticky;
+    z-index: 3; }
   .br-table .br-select .select-selected {
     color: #2670e8;
     border-radius: 0;
@@ -12448,10 +12459,30 @@ fieldset legend,
     .br-table .bottom-bar .pagination .divider {
       margin: 0 8px 0 16px; }
     .br-table .responsive {
-      overflow: auto;
-      max-height: 100vh; }
+      overflow: auto; }
+    .br-table .headers {
+      background-color: #ededed;
+      display: block;
+      overflow-y: hidden;
+      position: sticky;
+      top: 0;
+      z-index: 2; }
+      .br-table .headers .scroller {
+        align-items: center;
+        display: flex;
+        height: 56px;
+        overflow-x: hidden; }
+      .br-table .headers .item {
+        color: #0c326f;
+        font-weight: 600;
+        padding: 6px; }
+        .br-table .headers .item:first-child {
+          padding-left: 16px; }
+        .br-table .headers .item:last-child {
+          padding-right: 16px; }
     .br-table table {
       display: table;
+      margin-top: -56px;
       width: 100%; }
       .br-table table th {
         background-color: #ededed;
@@ -12470,9 +12501,6 @@ fieldset legend,
           padding-right: 6px; }
       .br-table table thead {
         display: table-header-group; }
-        .br-table table thead th {
-          position: sticky;
-          top: 0; }
       .br-table table tbody {
         display: table-row-group; }
         .br-table table tbody td {
@@ -12482,8 +12510,10 @@ fieldset legend,
         .br-table table tbody tr {
           box-shadow: none;
           margin: 0; }
-    .br-table.is-datatable .responsive {
-      max-height: calc(100vh - 56px); } }
+    .br-table.is-datatable .headers {
+      top: 56px; }
+    .br-table.is-datatable table thead th {
+      top: 56px; } }
 
 .br-tabs {
   border-bottom: 1px solid #ccc;

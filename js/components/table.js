@@ -1,23 +1,52 @@
 const brTables = document.querySelectorAll(".br-table");
 const active = "is-active";
+let brTablesCount = 1;
+
+function cloneHeader(parent, element, name) {
+  let clone = element.cloneNode(true);
+  let headers = document.createElement("div");
+  let scroller = document.createElement("div");
+
+  scroller.classList.add("scroller");
+  scroller.classList.add("syncscroll");
+  scroller.setAttribute("name", name);
+  headers.appendChild(scroller);
+  for (let i = 0; i < element.children.length; i++) {
+    let item = document.createElement("div");
+    let header = clone.children[i].innerHTML;
+
+    item.style.flex = `1 0 ${element.children[i].offsetWidth}px`;
+    item.classList.add("item");
+    item.innerHTML = header;
+    scroller.appendChild(item);
+  }
+
+  headers.classList.add("headers");
+  parent.appendChild(headers);
+}
 
 for (let brTable of brTables) {
   let searchBar = brTable.querySelector(".search-bar");
   let searchTrigger = brTable.querySelector("#search-trigger");
   let searchClose = brTable.querySelector("#search-close");
+  let headers = brTable.querySelector("table thead tr");
+  let headersName = `table-${brTablesCount++}`;
+  let responsive = brTable.querySelector(".responsive");
+
+  responsive.setAttribute("name", headersName);
+
+  cloneHeader(brTable, headers, headersName);
 
   if (searchTrigger) {
     searchTrigger.addEventListener("click", function() {
       searchBar.classList.add(active);
     });
-    console.log(searchTrigger);
   }
 
   if (searchClose) {
     searchClose.addEventListener("click", function() {
       searchBar.classList.remove(active);
     });
-    console.log(searchClose);
   }
 }
 
